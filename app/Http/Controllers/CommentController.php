@@ -7,10 +7,6 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Comment;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Requests\StoreCommentRequest;
-use App\Http\Requests\UpdateCommentRequest;
 
 
 class CommentController extends Controller

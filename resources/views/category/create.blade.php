@@ -5,7 +5,7 @@
             <div class="col-12">
                 <h3>Create New Category</h3>
                 <hr>
-                <form action="{{ route('category.store') }}" method="post">
+                <form action="{{ route('category.store') }}" method="POST">
                     @csrf
                     <div class="mb-3">
                         <label class=" form-label" for="">Category Title</label>

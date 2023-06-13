@@ -21,8 +21,8 @@ class CategorySeeder extends Seeder
             $arr[] = [
                 "title" => $category,
                 "slug" => Str::slug($category),
-                // "user_id" => User::where("role","admin")->get()->random()->id,
-                "user_id" => 11,
+                "user_id" => User::where("role","admin")->get()->random()->id,
+                // "user_id" => 11,
                 "updated_at" => now(),
                 "created_at" => now(),
             ];
