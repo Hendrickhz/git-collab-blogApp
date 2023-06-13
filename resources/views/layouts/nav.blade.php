@@ -1,10 +1,13 @@
+
 <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm sticky-top">
+
     <div class="container">
         <a class="navbar-brand" href="{{ url('/') }}">
             {{ config('app.name', 'Laravel') }}
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
+
             <span class="navbar-toggler-icon"></span>
         </button>
 
@@ -19,35 +22,41 @@
                 <!-- Authentication Links -->
                 @auth
 
-                    @can('viewAny', App\Models\Category::class)
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('category.create') }}">Create Category</a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('category.index') }}">Category List</a>
-                        </li>
-                    @endcan
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        Articles
+                    </a>
 
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
+                        <a class="dropdown-item" href="{{ route('article.create') }}">Create Article</a>
+                        <a class="dropdown-item" href="{{ route('article.index') }}"> Article List</a>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('article.create') }}">Create Article</a>
-                    </li>
+                    </div>
+                </li>
+                @can('viewAny',App\Models\Category::class)
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('article.index') }}">Article List</a>
-                    </li>
+                <li class="nav-item dropdown">
+                    <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                        Categories
+                    </a>
 
+                    <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
 
-                    @can('admin-only')
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ route('users') }}">User List</a>
-                        </li>
-                    @endcan
+                        <a class="dropdown-item" href="{{ route('category.create') }}">Create category</a>
+                        <a class="dropdown-item" href="{{ route('category.index') }}"> category List</a>
 
+                    </div>
+                </li>
+                @endcan
+                @can('admin-only',App\Models\User::class)
+
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('users') }}"> Users List</a>
+                </li>
+                @endcan
                 @endauth
-
 
                 @guest
                     @if (Route::has('login'))
@@ -63,14 +72,16 @@
                     @endif
                 @else
                     <li class="nav-item dropdown">
-                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+
+                        <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+
                             {{ Auth::user()->name }}
                         </a>
 
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             <a class="dropdown-item" href="{{ route('logout') }}"
-                                onclick="event.preventDefault();
+                      onclick="event.preventDefault();
+
                                              document.getElementById('logout-form').submit();">
                                 {{ __('Logout') }}
                             </a>

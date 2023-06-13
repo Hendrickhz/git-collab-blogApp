@@ -1,125 +1,94 @@
-<div class=" comment">
 
-    <h4>Comment & Reply</h4>
-
-    {{-- {{ dd($article->comments()->whereNull("parent_id")->latest("id")->get()) }} --}}
-
+@auth
+<div class="">
+    <h4>Write a comment</h4>
+    <form action="{{route('comment.store')}}" method="POST">
+    @csrf
+     <input type="hidden" name="article_id" value="{{$article->id}}">
+     <textarea name="content" class=" form-control @error('content') is-invalid @enderror" id="" cols="30" rows="5" placeholder="say something about the article ....."></textarea>
+     @error('content')
+        <div class=" invalid-feedback">{{ $message }}</div>
+    @enderror
+     <p class=" text-muted">Commenting as {{Auth::user()->name}}</p>
+     <button class=" btn btn-dark">Comment</button>
+    </form>
+</div>
+@else
+<div class=" text-center  card p-4">
+    <h4 >To leave a comment, you need to login First.</h4>
+    <a href="{{route('login')}}" class="my-2 btn btn-primary mx-auto ">Login</a>
+</div>
+@endauth
+<div class="">
+    <h4 class=" mt-4">Comments and Replies</h4>
     @forelse ($article->comments()->whereNull("parent_id")->latest("id")->get() as $comment)
-        <div class=" card mb-3">
-            <div class="card-body ">
-                <p class=" mb-0">
-                    <i class="bi bi-chat-square-text-fill me-2"></i> {{ $comment->content }}
-                </p>
-
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="  d-flex  align-items-start ">
+                <i class="bi bi-chat-left-dots-fill me-3"></i>
                 <div class="">
+                   <div class=" d-flex justify-content-between">
+                    <p class="fw-bold">{{$comment->user->name}} <span class=" ms-3 text-muted">{{$comment->created_at->diffForHumans()}}</span></p>
+                    @can('delete',$comment)
+                    <form class="" action="{{route('comment.destroy',$comment->id)}}" method="POST">
+                        @csrf
+                        @method('DELETE')
 
-                    <span class=" badge bg-dark">
-                        <i class=" bi bi-person"></i> {{ $comment->user->name }}
-                    </span>
+                        <button class=" btn btn-sm" type="submit" ><i class=" bi bi-trash3"></i></button>
 
-                    <span class=" badge bg-dark">
-                        <i class=" bi bi-clock"></i> {{ $comment->created_at->diffForHumans() }}
-                    </span>
-
-                    @can('delete', $comment)
-                        <form action="{{ route('comment.destroy', $comment->id) }}" method="post" class=" d-inline-block">
-                            @csrf
-                            @method('delete')
-                            <button class=" badge border-0 bg-dark">
-                                <i class=" bi bi-trash3"></i> Delete
-                            </button>
-                        </form>
+                    </form>
                     @endcan
 
+                   </div>
+                    <span>{{$comment->content}}</span>
+                   @auth
+                  <div class="">
+                    <i class="bi bi-reply-fill reply-btn"></i>
+                    <div class=" border p-3  d-none">
+                     <p class=" fw-bold text-muted">Replying to {{$comment->user->name}}</p>
+                     <form action="{{route('comment.store')}}" method="POST">
+                     @csrf
+                      <input type="hidden" name="article_id" value="{{$article->id}}">
+                      <input type="hidden" name="parent_id" value="{{$comment->id}}">
+                      <textarea name="content" class=" form-control @error('content') is-invalid @enderror" id="" cols="30" rows="2" placeholder="Say something ....."></textarea>
+                      @error('content')
+                         <div class=" invalid-feedback">{{ $message }}</div>
+                     @enderror
+                      <p class=" text-muted">Replying as {{Auth::user()->name}}</p>
+                      <button class=" btn btn-dark btn-sm">Reply</button>
+                     </form>
+                  </div>
+                  </div>
+                  @endauth
+                  @forelse ($comment->replies()->get() as $reply)
+                  <div class=" d-flex ">
+                      <p class="fw-bold">{{$reply->user->name}} <span class="  text-muted">{{$reply->created_at->diffForHumans()}}</span></p>
+                      @can('delete',$reply)
+                      <form class="" action="{{route('comment.destroy',$reply->id)}}" class="d-inline" method="POST">
+                          @csrf
+                          @method('DELETE')
 
+                          <button class=" btn btn-sm" type="submit" ><i class=" bi bi-trash3"></i></button>
 
-                    @auth
+                      </form>
 
-                        <span role='button' class=" user-select-none badge bg-dark mb-2 reply-btn">
-                            <i class=" bi bi-reply"></i> Reply
-                        </span>
-
-                        <form action="{{ route('comment.store') }}" class=" ms-4 d-none" method="post">
-                            @csrf
-                            <input type="hidden" name="parent_id" value="{{ $comment->id }}">
-                            <input type="hidden" name="article_id" value={{ $article->id }}>
-                            <textarea name="content" class=" form-control mb-2" rows="2" placeholder="Reply to {{ $comment->user->name }}'s comment ..."></textarea>
-                            <div class=" d-flex justify-content-between align-items-end">
-                                <p class=" mb-0">Replying as {{ Auth::user()->name }}</p>
-                                <button class="btn btn-sm btn-dark">Reply</button>
-                            </div>
-                        </form>
-
-                    @endauth
-
-
-                    @foreach ($comment->replies()->latest("id")->get() as $reply)
-
-                    <div class=" card ms-4 mt-2">
-                        <div class="card-body ">
-                            <p class=" mb-0">
-                                <i class="bi bi-reply me-2"></i> {{ $reply->content }}
-                            </p>
-
-                            <div class="">
-
-                                <span class=" badge bg-dark">
-                                    <i class=" bi bi-person"></i> {{ $reply->user->name }}
-                                </span>
-
-                                <span class=" badge bg-dark">
-                                    <i class=" bi bi-clock"></i> {{ $reply->created_at->diffForHumans() }}
-                                </span>
-
-                                @can('delete', $reply)
-                                    <form action="{{ route('comment.destroy', $reply->id) }}" method="post" class=" d-inline-block">
-                                        @csrf
-                                        @method('delete')
-                                        <button class=" badge border-0 bg-dark">
-                                            <i class=" bi bi-trash3"></i> Delete
-                                        </button>
-                                    </form>
-                                @endcan
-                            </div>
-                        </div>
+                      @endcan
                     </div>
+                    <span>{{$reply->content}}</span>
+                      @empty
 
-                    @endforeach
-
-
-
-
+                      @endforelse
 
                 </div>
+
+
+
             </div>
         </div>
-
-    @empty
-
-        <div class=" card mb-3">
-            <div class="card-body text-center">
-                <p class=" mb-0">There is no comment yet !</p>
-            </div>
-        </div>
+    </div>
+   @empty
+    <h5 class=" text-muted">There is no comment at the comment.</h5>
     @endforelse
-
-
-    @auth
-        <form action="{{ route('comment.store') }}" method="post">
-            @csrf
-
-            <input type="hidden" name="article_id" value={{ $article->id }}>
-            <textarea name="content" class=" form-control mb-2" rows="3" placeholder="Say something about this article ...."></textarea>
-            <div class=" d-flex justify-content-between align-items-end">
-                <p class=" mb-0">Commenting as {{ Auth::user()->name }}</p>
-                <button class="btn btn-sm btn-dark">Comment</button>
-            </div>
-        </form>
-
-    @endauth
-
-
-
 </div>
+@vite('resources/js/reply.js')
 
-@vite(["resources/js/reply.js"])

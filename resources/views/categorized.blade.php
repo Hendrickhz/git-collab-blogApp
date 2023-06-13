@@ -1,10 +1,15 @@
 @extends('layouts.master')
 @section('content')
-@if (request()->has('keyword'))
+@if (request()->has('keyword') )
     <div class=" mb-4 d-flex justify-content-between">
-        <h5 class=" mb-0">Search results by keyword '{{request()->keyword}}'</h5>
+        <h5 class=" mb-0">Search results by keyword '{{request()->keyword}}' in Category {{$category->title}}</h5>
         <a href="{{route('page.index')}}" class=" text-dark">See All</a>
     </div>
+@else
+<div class=" mb-4 d-flex justify-content-between">
+    <h5 class=" mb-0">Categorized by '{{$category->title}}'</h5>
+    <a href="{{route('page.index')}}" class=" text-dark">See All</a>
+</div>
 @endif
 @forelse ($articles as $article)
 <div class="card mb-4">

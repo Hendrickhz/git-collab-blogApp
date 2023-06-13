@@ -9,12 +9,14 @@ use Illuminate\Auth\Access\Response;
 class CommentPolicy
 {
 
-    public function before(User $user){
-        if($user->role === "admin"){
+    public function before(User $user)
+    {
+        if ($user->role == "admin") {
             return true;
         }
+        return null;
     }
-    /**
+
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
@@ -51,7 +53,9 @@ class CommentPolicy
      */
     public function delete(User $user, Comment $comment): bool
     {
-        return $user->id === $comment->user_id;
+
+        return $user->id == $comment->user_id;
+
     }
 
     /**
