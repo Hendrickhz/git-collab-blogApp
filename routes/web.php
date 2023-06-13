@@ -6,6 +6,10 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\HomeController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -26,12 +30,18 @@ Route::controller(PageController::class)->group(function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::middleware(['auth'])->prefix('dashboard')->group(function(){
+    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::resource('article', ArticleController::class);
+    Route::resource('category', CategoryController::class)->except('show');
+    Route::get('/user-list', [HomeController::class, 'users'])->name('users')->can('admin-only');
+});
 
-Route::resource('article', ArticleController::class);
+
 
 Route::resource('category', CategoryController::class);
 
 Route::resource('comment', CommentController::class)->only([
     "store", "update", "destroy",
 ]);
+
