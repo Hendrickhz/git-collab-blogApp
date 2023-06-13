@@ -13,7 +13,7 @@
                         <th>Information</th>
                         <th>Category Count</th>
                         <th>Article Count</th>
-                        <th>Control</th>
+                
                         <th>Updated At</th>
                         <th>Created At</th>
                     </tr>
@@ -36,10 +36,7 @@
                             {{$user->articles->count()}}
                         </td>
 
-                        <td>
 
-
-                        </td>
                         <td>
                             <p class=" small mb-0">
                                 <i class=" bi bi-clock"></i>
