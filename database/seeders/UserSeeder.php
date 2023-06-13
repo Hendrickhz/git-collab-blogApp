@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'poe@gmail.com',
             'password' => Hash::make('asdffdsa'),
         ]);
-        User::factory(10)->create();
+        User::factory(8)->create();
 
         User::factory()->create([
             'name' => 'Hein Htet Zaw',
