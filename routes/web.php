@@ -1,8 +1,11 @@
 <?php
 
-use App\Http\Controllers\ArticleController;
-use App\Http\Controllers\CategoryController;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\CategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::controller(PageController::class)->group(function () {
+    Route::get('/', 'index')->name('page.index');
+    Route::get('/article-detail/{slug}', 'show')->name('page.show');
+    Route::get('/category/{slug}', 'categorized')->name('page.categorized');
 });
 
 Auth::routes();
@@ -26,3 +31,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::resource('article', ArticleController::class);
 
 Route::resource('category', CategoryController::class);
+
+Route::resource('comment', CommentController::class)->only([
+    "store", "update", "destroy",
+]);
